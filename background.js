@@ -22,6 +22,18 @@ function randomColor() {
   return color;
 }
 
+function changeBackground(c, color) {
+  c.clearRect(0, 0, pixels, pixels);
+  c.fillStyle = color;
+  c.fillRect(0, 0, pixels, pixels)
+}
+
+function updateIcon(c) {
+  chrome.browserAction.setIcon({
+    imageData: c.getImageData(0, 0, pixels, pixels)
+  });
+}
+
 function drawArc(c, x, y, radius, start, arcLength) {
   /**
    * @summary: Draws an arc.
@@ -49,8 +61,23 @@ function main() {
   canvas.height = pixels;
   var c = canvas.getContext("2d");
 
-  glowstick(c);
-  snek(c);
+  changeColors(c);
+  // glowstick(c);
+  // snek(c);
+}
+
+function changeColors(c) {
+  var colors = ["red","orange","yellow", "green", "blue", "purple"];
+  var i = 0;
+
+  (function animate() {
+    changeBackground(c, colors[i]);
+    i += 1;
+    i %= colors.length;
+
+    updateIcon(c);
+    setTimeout(animate, 200);
+  })();
 }
 
 function snek(c) {
@@ -69,13 +96,12 @@ function glowstick(c) {
   var radius = 5;
   var d_radius = 1;
   c.strokeStyle = "white";
-  c.fillStyle = "black";
+  background = "black";
 
   // Call animate immediately
   (function animate() {
     // Reset the background to black
-    c.clearRect(0, 0, pixels, pixels);
-    c.fillRect(0, 0, pixels, pixels);
+    changeBackground(c, background);
 
     // Draw 4 arcs evenly spaced
     drawArc(c, 9, 9, radius, start, arcLength);
@@ -84,9 +110,7 @@ function glowstick(c) {
     drawArc(c, 9, 9, radius, start + PI*1.5, arcLength);
 
     // Change the actual icon to the new drawing
-    chrome.browserAction.setIcon({
-      imageData: c.getImageData(0, 0, pixels, pixels)
-    });
+    updateIcon(c);
 
     // Increase the start radians
     start += PI / 8;
@@ -100,7 +124,7 @@ function glowstick(c) {
     else if (radius == 0) {
       d_radius = 1;
       c.strokeStyle = randomColor();
-      c.fillStyle = randomColor(); 
+      background = randomColor(); 
     }
 
     // Call animate() every 100 ms

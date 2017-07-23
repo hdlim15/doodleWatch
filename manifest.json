@@ -2,13 +2,13 @@
 	// Required
 	"manifest_version": 2,
 
-	"name": "getoffreddit",
-	"version": "0.0.0",
+	"name": "doodleWatch",
+	"version": "0.0.1",
 	"author": "Hyuckin David Lim",
 
 	// Recommended
 	// "default_locale": "en",
-	"description": "An extension to help me get off reddit",
+	"description": "An extension to keep your eyes from getting bored",
 	"icons": {
 		"16": "images/temp_icon16.png",
 		"128": "images/temp_icon128.png"
