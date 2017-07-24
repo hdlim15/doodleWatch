@@ -4,6 +4,7 @@ var PI = Math.PI;
 
 // var currentAnimation = ""
 var isPaused = false
+var timeoutID;
 
 // Call main function
 main();
@@ -21,12 +22,27 @@ function main() {
 
     // changeColors(c);
     glowstick(c);
+    // bingalee(c);
     // snek(c);
+
+    chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
+      if (response == "glowstick") {
+        window.clearTimeout(timeoutID);
+        glowstick(c);
+      }
+      else if (response == "bingalee") {
+        window.clearTimeout(timeoutID);
+        bingalee(c);
+      }
+    });
 }
 
-// Update isPaused based on the button pressed
 chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
-  if (response == "stop animation") {
+  if (response == "opened") {
+    chrome.runtime.sendMessage(isPaused);
+    // alert(isPaused);
+  }
+  else if (response == "stop animation") {
     isPaused = true;
   }
   else if (response == "start animation") {

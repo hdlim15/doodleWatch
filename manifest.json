@@ -3,11 +3,10 @@
 	"manifest_version": 2,
 
 	"name": "doodleWatch",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"author": "Hyuckin David Lim",
 
 	// Recommended
-	// "default_locale": "en",
 	"description": "An extension to keep your eyes from getting bored",
 	"icons": {
 		"16": "images/temp_icon16.png",
@@ -25,7 +24,4 @@
 		"page": "background.html",
 		"persistent": false
 	}
-
-
-
 }

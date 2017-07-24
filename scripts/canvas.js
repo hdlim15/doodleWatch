@@ -14,7 +14,7 @@ function randomColor() {
   return color;
 }
 
-function changeBackground(c, color) {
+function setBackground(c, color) {
   c.clearRect(0, 0, pixels, pixels);
   c.fillStyle = color;
   c.fillRect(0, 0, pixels, pixels)
