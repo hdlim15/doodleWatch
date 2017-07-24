@@ -21,8 +21,9 @@
 	},
 
 	"background": {
-		"scripts": ["background.js"],
-		"persistent": true
+		// scripts are contained in background.html
+		"page": "background.html",
+		"persistent": false
 	}
 
 

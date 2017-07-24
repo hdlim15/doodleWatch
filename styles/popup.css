@@ -1,0 +1,13 @@
+button {
+	width: 100px;
+	height: 30px;
+
+	border: 3px solid black;
+	outline: none;
+
+	font-family: Arial;
+	font-weight: bold;
+	font-size: 1.5em;
+	color: white;
+	background-color: #ff5555;
+}
