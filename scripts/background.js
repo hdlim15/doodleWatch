@@ -1,51 +1,46 @@
 // Global variables and constants
-var pixels = 19;
 var PI = Math.PI;
+var pixels = 19;
 
 // var currentAnimation = ""
 var isPaused = false
 var timeoutID;
 
-// Call main function
-main();
+// Call init function
+init();
 
-
-function main() {
-  /**
-   * Initializes the canvas and its context
-   * @returns context: The canvas's context
-   */
+function init() {
+    /**
+     * Initializes the canvas and its context
+     * @returns context: The canvas's context
+     */
     var canvas = document.createElement("canvas"); // Create the canvas
     canvas.width = pixels;
     canvas.height = pixels;
     var c = canvas.getContext("2d");
 
-    // changeColors(c);
     glowstick(c);
-    // bingalee(c);
-    // snek(c);
 
     chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
-      if (response == "glowstick") {
-        window.clearTimeout(timeoutID);
-        glowstick(c);
-      }
-      else if (response == "bingalee") {
-        window.clearTimeout(timeoutID);
-        bingalee(c);
-      }
+        // CA_ signifies a Change Animation message
+        if (response.substring(0, 3) == "CA_") {
+            // Stop the previous animation
+            window.clearTimeout(timeoutID);
+            // Start the next animation
+            var animation = response.substring(3,);
+            window[animation](c);
+        }
     });
 }
 
 chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
-  if (response == "opened") {
-    chrome.runtime.sendMessage(isPaused);
-    // alert(isPaused);
-  }
-  else if (response == "stop animation") {
-    isPaused = true;
-  }
-  else if (response == "start animation") {
-    isPaused = false;
-  }
+    if (response == "opened") {
+        chrome.runtime.sendMessage(isPaused);
+    }
+    else if (response == "stop animation") {
+        isPaused = true;
+    }
+    else if (response == "start animation") {
+        isPaused = false;
+    }
 });

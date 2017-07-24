@@ -1,13 +1,14 @@
 function changeColors(c) {
-  var colors = ["red","orange","yellow", "green", "blue", "purple"];
-  var i = 0;
+    var colors = ["red","orange","yellow", "green", "blue", "purple"];
+    var i = 0;
 
-  (function animate() {
-    changeBackground(c, colors[i]);
-    i += 1;
-    i %= colors.length;
-
-    updateIcon(c);
-    setTimeout(animate, 200);
-  })();
+    (function animate() {
+        if (!isPaused) {
+            setBackground(c, colors[i]);
+            updateIcon(c);
+            i += 1;
+            i %= colors.length;
+        }
+        timeoutID = setTimeout(animate, 200);
+    })();
 }
