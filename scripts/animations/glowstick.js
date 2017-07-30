@@ -17,7 +17,7 @@ function glowstick(c) {
 
     function updateVariables() {
         // Increase the start radians
-        start += cfg.arcLength/2;
+        start += cfg.arcLength/3;
         start %= PI*2;
 
         // Increase and decrease the radius. Change color when radius is 0
@@ -27,8 +27,6 @@ function glowstick(c) {
         }
         else if (radius == 0) {
             d_radius = 1;
-            // strokeColor = randomColor();
-            // background = randomColor();
         }
     }
 
@@ -43,10 +41,13 @@ function glowstick(c) {
                 case "background":
                     cfg.background = messageInfo[2];
                     break;
-                case "num":
+                case "numArcs":
                     cfg.numArcs = parseInt(messageInfo[2]);
+                    var maxWidth = 2*PI / cfg.numArcs;
+                    maxWidth = (Math.ceil(maxWidth*100) / 100).toFixed(2);
+                    chrome.runtime.sendMessage("max arcLength_" + maxWidth.toString());
                     break;
-                case "length":
+                case "arcLength":
                     cfg.arcLength = parseFloat(messageInfo[2]);
                     break;
                 case "speed":
@@ -54,11 +55,6 @@ function glowstick(c) {
                     break;
                 default:
                     console.log("invalid glowstick message");
-            }
-
-            if (messageInfo[1] == "color") {
-            }
-            else if (messageInfo[1] == "num") {
             }
         }
     });
@@ -69,13 +65,13 @@ function glowstick(c) {
 
     // Variables that the user can change
     var cfg = {
-        numArcs: 3,
-        arcLength: PI / 3,
-        arcWidth: 2,
-        timeout: 75,
+        "numArcs": 3,
+        "arcLength": PI / 3,
+        "arcWidth": 2,
+        "timeout": 75,
 
-        background: "black",
-        strokeColor: "white"
+        "background": "black",
+        "strokeColor": "white"
     };
 
 

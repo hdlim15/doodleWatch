@@ -13,6 +13,8 @@ function init() {
      * Initializes the canvas and its context
      * @returns context: The canvas's context
      */
+    var forEach = Array.prototype.forEach;
+
     var canvas = document.createElement("canvas"); // Create the canvas
     canvas.width = pixels;
     canvas.height = pixels;

@@ -1,6 +1,19 @@
 // When the DOM is loaded
 document.addEventListener("DOMContentLoaded", function() {
-    startStop = startStop;
+    var forEach = Array.prototype.forEach;
+    var animations = document.getElementsByClassName("animation");
+
+    var startStop = document.getElementById("startStop");
+    function stopAnimation() {
+        chrome.runtime.sendMessage("stop animation");
+        startStop.style.backgroundColor = "green";
+        startStop.innerHTML = "START";
+    }
+    function startAnimation() {
+        chrome.runtime.sendMessage("start animation");
+        startStop.style.backgroundColor = "red";
+        startStop.innerHTML = "STOP";
+    }
 
     // When popup is loaded, send a message. background will repond with isPaused
     (function notifyPopupLoaded() {
@@ -8,28 +21,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
         chrome.runtime.onMessage.addListener(function(response, sender, sendResponse) {
             if (response == "isPaused true") {
-                startStop.style.backgroundColor = "green";
-                startStop.innerHTML = "START";
+                stopAnimation();
             }
             else if (response == "isPaused false") {
-                startStop.style.backgroundColor = "red";
-                startStop.innerHTML = "STOP";
+                startAnimation();
             }
         });
     })();
 
-    // 
+    // Start and stop the animation when the button is pressed
     startStop.addEventListener("click", function() {
-        function stopAnimation() {
-            chrome.runtime.sendMessage("stop animation");
-            startStop.style.backgroundColor = "green";
-            startStop.innerHTML = "START";
-        }
-        function startAnimation() {
-            chrome.runtime.sendMessage("start animation");
-            startStop.style.backgroundColor = "red";
-            startStop.innerHTML = "STOP";
-        }
         if (startStop.innerHTML == "STOP") {
             stopAnimation();
         }
@@ -38,17 +39,15 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // 
-    var animations = document.getElementsByClassName("animation");
-    window.addEventListener("click", function(e) {  
-        for (var i = 0; i < animations.length; i++) {
-            var animation = animations[i];
+    // Open and close the configurations window 
+    window.addEventListener("click", function(e) {
+        function toggleConfigDisplay(animation, clickLocation) {
             var configurations = animation.getElementsByClassName("configurations")[0];
             var colorMenu = document.getElementById("jscolorWindow");
 
-            if (animation.contains(e.target)) {
+            if (animation.contains(clickLocation)) {
                 if (configurations.style.display == "block") {
-                    if (!configurations.contains(e.target)) {
+                    if (!configurations.contains(clickLocation)) {
                         configurations.style.display = "none";
                     }
                 }
@@ -57,42 +56,39 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
             else {
-                if (colorMenu && colorMenu.contains(e.target)) {
-                }
+                if (colorMenu && colorMenu.contains(clickLocation)) {}
                 else {
                     configurations.style.display = "none";
                 }
             }
         }
+
+        forEach.call(animations, function(animation) {
+            toggleConfigDisplay(animation, e.target);
+        });
     });
 
-
-    document.getElementById("glowstick_num").addEventListener("input", function() {
-        chrome.runtime.sendMessage(this.id + "_" + this.value.toString());
-    });
-    document.getElementById("glowstick_length").addEventListener("input", function() {
-        console.log(this.value);
-        chrome.runtime.sendMessage(this.id + "_" + this.value.toString());
-    });
-    document.getElementById("glowstick_speed").addEventListener("input", function() {
-        console.log(this.value);
-        chrome.runtime.sendMessage(this.id + "_" + this.value.toString());
+    /************************** CHANGE ANIMATIONS **************************/
+    forEach.call(animations, function(animation) {
+        animation.addEventListener("click", function() {
+            chrome.runtime.sendMessage("CA_" + this.id);
+        });
     });
 
-
-
-    /**************** Event listeners that change animations ****************/
-    document.getElementById("glowstick").addEventListener("click", function() {
-        chrome.runtime.sendMessage("CA_glowstick");
+    /******************** CHANGE CONFIGURATION PARAMTER ********************/
+    var parameters = document.getElementsByClassName("parameter");
+    forEach.call(parameters, function(parameter) {
+        parameter.addEventListener("input", function() {
+            chrome.runtime.sendMessage(this.id + "_" + this.value.toString());
+        });
     });
-    document.getElementById("bingalee").addEventListener("click", function() {
-        chrome.runtime.sendMessage("CA_bingalee");
-    });
-    document.getElementById("changeColors").addEventListener("click", function() {
-        chrome.runtime.sendMessage("CA_changeColors");
-    });
-    /************************************************************************/
 
+    chrome.runtime.onMessage.addListener(function(response, sender, sendResponse) {
+        var info = response.split("_");
+        if (info[0] == "max arcLength") {
+            document.getElementById("glowstick_arcLength").max = parseFloat(info[1]);
+        }
+    });
 
 });
 

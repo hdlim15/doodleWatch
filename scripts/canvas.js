@@ -46,6 +46,5 @@ function drawArc(c, x, y, radius, start, arcLength) {
      */
     c.beginPath();
     c.arc(x, y, radius, start, start + arcLength);
-    c.arc(x, y, radius + 1, start, start + arcLength);
     c.stroke();
 }
