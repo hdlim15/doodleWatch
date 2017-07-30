@@ -3,19 +3,22 @@ function glowstick(c) {
      * glowstick like animation
      */
     function updateCanvas() {
-        setBackground(c, background);
+        setBackground(c, cfg.background);
+        c.strokeStyle = cfg.strokeColor;
 
-        // Draw 4 arcs evenly spaced
-        drawArc(c, 9, 9, radius, start, arcLength);
-        drawArc(c, 9, 9, radius, start + PI/2, arcLength);
-        drawArc(c, 9, 9, radius, start + PI, arcLength);
-        drawArc(c, 9, 9, radius, start + PI*1.5, arcLength);
+        // Draw numArcs evenly spaced arcs
+        var offset = 2*PI / cfg.numArcs;
+        for (var i = 0; i < cfg.arcWidth; i++) {
+            for (var j = 0; j < cfg.numArcs; j++) {
+                drawArc(c, 9, 9, radius+i, start + j*offset, cfg.arcLength);
+            }
+        }
     }
 
     function updateVariables() {
         // Increase the start radians
-        start += PI / 8;
-        start %= PI * 2;
+        start += cfg.arcLength/2;
+        start %= PI*2;
 
         // Increase and decrease the radius. Change color when radius is 0
         radius += d_radius;
@@ -24,17 +27,57 @@ function glowstick(c) {
         }
         else if (radius == 0) {
             d_radius = 1;
-            c.strokeStyle = randomColor();
-            background = randomColor(); 
+            // strokeColor = randomColor();
+            // background = randomColor();
         }
     }
 
-    var arcLength = PI / 4;
-    var start = 0;
-    var radius = 5;
+    // Get user input
+    chrome.runtime.onMessage.addListener(function(response, sender, sendResponse) {
+        var messageInfo = response.split("_");
+        if (messageInfo[0] == "glowstick") {
+            switch(messageInfo[1]) {
+                case "color":
+                    cfg.strokeColor = messageInfo[2];
+                    break;
+                case "background":
+                    cfg.background = messageInfo[2];
+                    break;
+                case "num":
+                    cfg.numArcs = parseInt(messageInfo[2]);
+                    break;
+                case "length":
+                    cfg.arcLength = parseFloat(messageInfo[2]);
+                    break;
+                case "speed":
+                    cfg.timeout = 225 - parseInt(messageInfo[2]);
+                    break;
+                default:
+                    console.log("invalid glowstick message");
+            }
+
+            if (messageInfo[1] == "color") {
+            }
+            else if (messageInfo[1] == "num") {
+            }
+        }
+    });
+    
     var d_radius = 1;
-    c.strokeStyle = "white";
-    background = "black";
+    var radius = 5;
+    var start = 0;
+
+    // Variables that the user can change
+    var cfg = {
+        numArcs: 3,
+        arcLength: PI / 3,
+        arcWidth: 2,
+        timeout: 75,
+
+        background: "black",
+        strokeColor: "white"
+    };
+
 
     // Call animate immediately
     (function animate() {
@@ -48,6 +91,6 @@ function glowstick(c) {
             updateVariables();
         }
 
-        timeoutID = window.setTimeout(animate, 100);
+        timeoutID = window.setTimeout(animate, cfg.timeout);
     })();
 }

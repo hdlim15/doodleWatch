@@ -1,5 +1,5 @@
 body {
-    width: 300px;
+    width: 500px;
     height: 485px;
 
     margin: 0;
@@ -18,7 +18,7 @@ body {
     width: 70px;
     height: 30px;
 
-    /*border: 2px solid black;*/
+    border: 1px solid black;
     outline: none;
 
     font-family: Arial;
@@ -27,25 +27,45 @@ body {
     color: white;
     background-color: #ff5555;
 
-    /*margin: auto;*/
-    /*display: block;*/
-    /*text-align: right;*/
     float: right;
-}
-
-div {
-    /*width: 100%;*/
-    /*border: 1px solid pink;*/
 }
 
 #favorites {
     text-align: center;
 }
 
-img.animation {
+.animation {
     width: 70px;
     height: 70px;
 
-    border: 1px solid black;
     margin: 9px;
+    display: inline-block;
+    border: 1px solid black;
+}
+
+.animation img {
+    width: 100%;
+    height: 100%;
+}
+
+.configurations {
+    display: none;
+    padding: 10px;
+    position: absolute;
+    z-index: 1000;
+    width: 300px;
+    height: 150px;
+    background-color: #99a0ff;
+
+}
+
+button {
+    outline: none;
+}
+
+.jscolor {
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    border: 2px solid black;
 }

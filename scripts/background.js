@@ -2,7 +2,6 @@
 var PI = Math.PI;
 var pixels = 19;
 
-// var currentAnimation = ""
 var isPaused = false
 var timeoutID;
 
@@ -19,23 +18,30 @@ function init() {
     canvas.height = pixels;
     var c = canvas.getContext("2d");
 
+    var currentAnimation = "glowstick";
     glowstick(c);
 
     chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
+        var messageInfo = response.split("_");
         // CA_ signifies a Change Animation message
-        if (response.substring(0, 3) == "CA_") {
-            // Stop the previous animation
-            window.clearTimeout(timeoutID);
-            // Start the next animation
-            var animation = response.substring(3,);
-            window[animation](c);
+        if (messageInfo[0] == "CA") {
+            // only start animation if it is a different one
+            var newAnimation = messageInfo[1];
+            if (newAnimation != currentAnimation) {
+                currentAnimation = newAnimation;
+                // Stop the previous animation
+                window.clearTimeout(timeoutID);
+                // Start the next animation
+                var animationFunction = window[newAnimation];
+                animationFunction(c);
+            }
         }
     });
 }
 
 chrome.runtime.onMessage.addListener(function (response, sender, sendResponse) {
-    if (response == "opened") {
-        chrome.runtime.sendMessage(isPaused);
+    if (response == "popup loaded") {
+        chrome.runtime.sendMessage("isPaused " + isPaused);
     }
     else if (response == "stop animation") {
         isPaused = true;
