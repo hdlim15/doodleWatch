@@ -38,6 +38,9 @@ function init() {
                 animationFunction(c);
             }
         }
+        else if (messageInfo[0] == "SAVE") {
+            
+        }
     });
 }
 

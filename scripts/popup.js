@@ -1,3 +1,6 @@
+//debugging purposes
+console = chrome.extension.getBackgroundPage().console;
+
 // When the DOM is loaded
 document.addEventListener("DOMContentLoaded", function() {
     var forEach = Array.prototype.forEach;
@@ -75,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    /******************** CHANGE CONFIGURATION PARAMTER ********************/
+    /******************* CHANGE CONFIGURATION PARAMETERS *******************/
     var parameters = document.getElementsByClassName("parameter");
     forEach.call(parameters, function(parameter) {
         parameter.addEventListener("input", function() {
@@ -83,13 +86,18 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    chrome.runtime.onMessage.addListener(function(response, sender, sendResponse) {
-        var info = response.split("_");
-        if (info[0] == "max arcLength") {
-            document.getElementById("glowstick_arcLength").max = parseFloat(info[1]);
-        }
+    var saveConfigurations = document.getElementsByClassName("saveConfigurations");
+    forEach.call(saveConfigurations, function(button) {
+        button.addEventListener("click", function() {
+            chrome.runtime.sendMessage("SAVE_" + this.parentElement.id);
+        });
     });
+});
 
+// to access variables and functions from the background script
+chrome.runtime.getBackgroundPage(function (backgroundPage) { 
+    // console.log(backgroundPage);
+    // document.getElementById("glowstick_arcLength").max = backgroundPage.maxWidth;
 });
 
 /* When a jscolor is selected, send a message with its id and the color */

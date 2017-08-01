@@ -22,17 +22,14 @@ function glowstick(c) {
 
         // Increase and decrease the radius. Change color when radius is 0
         radius += d_radius;
-        if (radius == 8) {
-            d_radius = -1;
-        }
-        else if (radius == 0) {
-            d_radius = 1;
+        if (radius >= 8 || radius <= 0) {
+            d_radius = -d_radius;
         }
     }
 
     // Get user input
-    chrome.runtime.onMessage.addListener(function(response, sender, sendResponse) {
-        var messageInfo = response.split("_");
+    chrome.runtime.onMessage.addListener(function(message) {
+        var messageInfo = message.split("_");
         if (messageInfo[0] == "glowstick") {
             switch(messageInfo[1]) {
                 case "color":
@@ -45,10 +42,11 @@ function glowstick(c) {
                     cfg.numArcs = parseInt(messageInfo[2]);
                     var maxWidth = 2*PI / cfg.numArcs;
                     maxWidth = (Math.ceil(maxWidth*100) / 100).toFixed(2);
-                    chrome.runtime.sendMessage("max arcLength_" + maxWidth.toString());
+                    console.log(maxWidth);
                     break;
                 case "arcLength":
                     cfg.arcLength = parseFloat(messageInfo[2]);
+                    console.log(cfg.arcLength);
                     break;
                 case "speed":
                     cfg.timeout = 225 - parseInt(messageInfo[2]);
