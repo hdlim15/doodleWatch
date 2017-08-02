@@ -1,17 +1,20 @@
-function changeColors(c) {
-    var colors = ["red","orange","yellow", "green", "blue", "purple"];
-    var i = 0;
+var changeColors = {
+    colors: ["red","orange","yellow", "green", "blue", "purple"],
+    index: 0,
 
-    setBackground(c, colors[i]);
-    updateIcon(c);
+    initialize: function initialize() {
+        setBackground(c, this.colors[this.index]);
+        updateIcon();
+    },
 
-    (function animate() {
+    animate: function animate() {
+        var that = this;
         if (!isPaused) {
-            setBackground(c, colors[i]);
-            updateIcon(c);
-            i += 1;
-            i %= colors.length;
+            setBackground(c, that.colors[that.index]);
+            updateIcon();
+            that.index += 1;
+            that.index %= that.colors.length;
         }
-        timeoutID = setTimeout(animate, 200);
-    })();
+        timeoutID = window.setTimeout(function(){that.animate();}, 200);
+    }
 }

@@ -22,11 +22,11 @@ document.addEventListener("DOMContentLoaded", function() {
     (function notifyPopupLoaded() {
         chrome.runtime.sendMessage("popup loaded");
 
-        chrome.runtime.onMessage.addListener(function(response, sender, sendResponse) {
-            if (response == "isPaused true") {
+        chrome.runtime.onMessage.addListener(function(message) {
+            if (message == "isPaused true") {
                 stopAnimation();
             }
-            else if (response == "isPaused false") {
+            else if (message == "isPaused false") {
                 startAnimation();
             }
         });
@@ -74,7 +74,10 @@ document.addEventListener("DOMContentLoaded", function() {
     /************************** CHANGE ANIMATIONS **************************/
     forEach.call(animations, function(animation) {
         animation.addEventListener("click", function() {
-            chrome.runtime.sendMessage("CA_" + this.id);
+            chrome.runtime.sendMessage({
+                "type": "change animation",
+                "newAnimation": this.id
+            });
         });
     });
 
@@ -82,14 +85,25 @@ document.addEventListener("DOMContentLoaded", function() {
     var parameters = document.getElementsByClassName("parameter");
     forEach.call(parameters, function(parameter) {
         parameter.addEventListener("input", function() {
-            chrome.runtime.sendMessage(this.id + "_" + this.value.toString());
+            chrome.runtime.sendMessage({
+                "type": "change parameter",
+                "animation": this.getAttribute("data-animation"),
+                "parameter": this.getAttribute("data-parameter"),
+                "value": this.value
+            });
         });
     });
 
+    /******************** SAVE CONFIGURATION PARAMETERS ********************/
     var saveConfigurations = document.getElementsByClassName("saveConfigurations");
     forEach.call(saveConfigurations, function(button) {
         button.addEventListener("click", function() {
-            chrome.runtime.sendMessage("SAVE_" + this.parentElement.id);
+            console.log(this.parentElement.id);
+            console.log(this.parentElement.parentElement.id);
+            chrome.runtime.sendMessage({
+                "type": "save configuration",
+                "SAVE": this.parentElement.id
+            });
         });
     });
 });
@@ -102,7 +116,11 @@ chrome.runtime.getBackgroundPage(function (backgroundPage) {
 
 /* When a jscolor is selected, send a message with its id and the color */
 function getInputColor(inputColor) {
-    var id = inputColor.id;
-    var color = inputColor.style.backgroundColor;
-    chrome.runtime.sendMessage(id + "_" + color);
+    console.log("f");
+    chrome.runtime.sendMessage({
+        "type": "change parameter",
+        "animation": inputColor.getAttribute("data-animation"),
+        "parameter": inputColor.getAttribute("data-parameter"),
+        "value": inputColor.style.backgroundColor
+    });
 }

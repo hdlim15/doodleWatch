@@ -1,4 +1,4 @@
-function updateIcon(c) {
+function updateIcon() {
     /**
      * Sets the extension icon to be the canvas.
      * @param c: The 2D context of a canvas.
@@ -31,7 +31,7 @@ function setBackground(c, color) {
      */
     c.clearRect(0, 0, pixels, pixels);
     c.fillStyle = color;
-    c.fillRect(0, 0, pixels, pixels)
+    c.fillRect(0, 0, pixels, pixels);
 }
 
 function drawArc(c, x, y, radius, start, arcLength) {
@@ -47,4 +47,9 @@ function drawArc(c, x, y, radius, start, arcLength) {
     c.beginPath();
     c.arc(x, y, radius, start, start + arcLength);
     c.stroke();
+}
+
+function drawBorder(color) {
+    c.strokeStyle = color;
+    c.strokeRect(0, 0, 19, 19);
 }
