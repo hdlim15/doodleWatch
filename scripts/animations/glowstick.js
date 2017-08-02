@@ -1,90 +1,59 @@
-function glowstick(c) {
+var glowstick = {
     /**
      * glowstick like animation
      */
-    function updateCanvas() {
-        setBackground(c, cfg.background);
-        c.strokeStyle = cfg.strokeColor;
-
-        // Draw numArcs evenly spaced arcs
-        var offset = 2*PI / cfg.numArcs;
-        for (var i = 0; i < cfg.arcWidth; i++) {
-            for (var j = 0; j < cfg.numArcs; j++) {
-                drawArc(c, 9, 9, radius+i, start + j*offset, cfg.arcLength);
-            }
-        }
-    }
-
-    function updateVariables() {
-        // Increase the start radians
-        start += cfg.arcLength/3;
-        start %= PI*2;
-
-        // Increase and decrease the radius. Change color when radius is 0
-        radius += d_radius;
-        if (radius >= 8 || radius <= 0) {
-            d_radius = -d_radius;
-        }
-    }
-
-    // Get user input
-    chrome.runtime.onMessage.addListener(function(message) {
-        var messageInfo = message.split("_");
-        if (messageInfo[0] == "glowstick") {
-            switch(messageInfo[1]) {
-                case "color":
-                    cfg.strokeColor = messageInfo[2];
-                    break;
-                case "background":
-                    cfg.background = messageInfo[2];
-                    break;
-                case "numArcs":
-                    cfg.numArcs = parseInt(messageInfo[2]);
-                    var maxWidth = 2*PI / cfg.numArcs;
-                    maxWidth = (Math.ceil(maxWidth*100) / 100).toFixed(2);
-                    console.log(maxWidth);
-                    break;
-                case "arcLength":
-                    cfg.arcLength = parseFloat(messageInfo[2]);
-                    console.log(cfg.arcLength);
-                    break;
-                case "speed":
-                    cfg.timeout = 225 - parseInt(messageInfo[2]);
-                    break;
-                default:
-                    console.log("invalid glowstick message");
-            }
-        }
-    });
-    
-    var d_radius = 1;
-    var radius = 5;
-    var start = 0;
+     d_radius: 1,
+     radius: 5,
+     start: 0,
 
     // Variables that the user can change
-    var cfg = {
+    cfg: {
         "numArcs": 3,
         "arcLength": PI / 3,
         "arcWidth": 2,
-        "timeout": 75,
+        "timeout": 100,
 
         "background": "black",
         "strokeColor": "white"
-    };
+    },
 
+    updateCanvas: function updateCanvas(c) {
+        setBackground(c, this.cfg.background);
+        c.strokeStyle = this.cfg.strokeColor;
+
+        // Draw numArcs evenly spaced arcs
+        var offset = 2*PI / this.cfg.numArcs;
+        for (var i = 0; i < this.cfg.arcWidth; i++) {
+            for (var j = 0; j < this.cfg.numArcs; j++) {
+                drawArc(c, 9, 9, this.radius+i, this.start + j*offset, this.cfg.arcLength);
+            }
+        }
+    },
+
+    updateVariables: function updateVariables() {
+        // Increase the start radians
+        this.start += this.cfg.arcLength/3;
+        this.start %= PI*2;
+
+        // Increase and decrease the radius. Change color when radius is 0
+        this.radius += this.d_radius;
+        if (this.radius >= 8 || this.radius <= 0) {
+            this.d_radius = -this.d_radius;
+        }
+    },
 
     // Call animate immediately
-    (function animate() {
+    animate: function animate(c) {
         // Initialize in case started on pause
-        updateCanvas();
-        updateIcon(c);
+        // this.updateCanvas(c);
+        // updateIcon(c);
+        var that = this;
 
         if (!isPaused) {
-            updateCanvas();
+            that.updateCanvas(c);
             updateIcon(c);
-            updateVariables();
+            that.updateVariables();
         }
-
-        timeoutID = window.setTimeout(animate, cfg.timeout);
-    })();
+        timeoutID = window.setTimeout(function(){that.animate(c);}, that.cfg.timeout);
+    }
 }
