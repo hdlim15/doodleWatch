@@ -48,13 +48,24 @@
               <td><input class="parameter" data-animation="glowstick" data-parameter="numArcs" type="range" min=1 max=5 step=1></td>
             </tr>
           </table>
-          <button class="saveConfigurations">Save</button>
+          <button class="saveConfigurations" data-animation="glowstick">Save</button>
         </div>
       </div>
 
-      <div class="animation" id="changeColors">
+      <div class="animation" id="ChangeColors">
         <img alt="changeColors">
         <div class="configurations">
+          <table>
+            <tr>
+              <td>Color 1</td>
+              <td><button class="jscolor" data-animation="ChangeColors" data-parameter="color1"></button></td>
+            </tr>
+            <tr>
+              <td>Color 2</td>
+              <td><button class="jscolor" data-animation="ChangeColors" data-parameter="color2"></button></td>
+            </tr>
+          </table>
+          <button class="saveConfigurations" data-animation="ChangeColors">Save</button>
         </div>
       </div>
       <div class="animation">
@@ -87,7 +98,10 @@
         <div class="configurations">
         </div>
       </div>
-    </div>
+    </div><!-- end of favorites div -->
+    
+    <canvas id="myCanvas" width="57px" height="57px" style="border:1px solid black;">
+</canvas>
   </body>
 </html>
 

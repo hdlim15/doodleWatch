@@ -18,9 +18,10 @@ var glowstick = {
         strokeColor: "white"
     },
 
-    updateCanvas: function updateCanvas() {
+    updateCanvas: function updateCanvas(c) {
         setBackground(c, this.cfg.background);
         c.strokeStyle = this.cfg.strokeColor;
+        console.log(this.cfg.strokeColor);
 
         // Draw numArcs evenly spaced arcs
         var offset = 2*PI / this.cfg.numArcs;
@@ -43,20 +44,20 @@ var glowstick = {
         }
     },
 
-    initialize: function initialize() {
-        this.updateCanvas();
-        updateIcon();
+    initialize: function initialize(c) {
+        this.updateCanvas(c);
+        updateIcon(c);
     },
 
     // Call animate immediately
-    animate: function animate() {
+    animate: function animate(c) {
         var that = this;
 
         if (!isPaused) {
-            that.updateCanvas();
-            updateIcon();
+            that.updateCanvas(c);
+            updateIcon(c);
             that.updateVariables();
         }
-        timeoutID = window.setTimeout(function(){that.animate();}, 250-that.cfg.speed);
+        timeoutID = window.setTimeout(function(){that.animate(c);}, 250-that.cfg.speed);
     }
 }

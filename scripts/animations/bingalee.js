@@ -11,7 +11,7 @@ var bingalee = {
         backgroundColor: "#FFF8DC"
     },
 
-    updateCanvas: function updateCanvas() {
+    updateCanvas: function updateCanvas(c) {
         setBackground(c, this.cfg.backgroundColor);
         c.save();
         c.translate(this.step, pixels / 2);
@@ -27,21 +27,21 @@ var bingalee = {
         this.step -= 2;
     },
 
-    initialize: function initialize() {
+    initialize: function initialize(c) {
         c.textAlign = "right";
         c.textBaseline = "middle";
-        this.updateCanvas();
-        updateIcon();
+        this.updateCanvas(c);
+        updateIcon(c);
     },
 
-    animate: function animate() {
+    animate: function animate(c) {
         var that = this;
 
         if (!isPaused) {
-            that.updateCanvas();
-            updateIcon();
+            that.updateCanvas(c);
+            updateIcon(c);
             that.updateVariables();
         }
-        timeoutID = window.setTimeout(function(){that.animate();}, 45);
+        timeoutID = window.setTimeout(function(){that.animate(c);}, 45);
     }
 }

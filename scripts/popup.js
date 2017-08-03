@@ -75,8 +75,8 @@ document.addEventListener("DOMContentLoaded", function() {
     forEach.call(animations, function(animation) {
         animation.addEventListener("click", function() {
             chrome.runtime.sendMessage({
-                "type": "change animation",
-                "newAnimation": this.id
+                type: "change animation",
+                newAnimation: this.id
             });
         });
     });
@@ -86,10 +86,10 @@ document.addEventListener("DOMContentLoaded", function() {
     forEach.call(parameters, function(parameter) {
         parameter.addEventListener("input", function() {
             chrome.runtime.sendMessage({
-                "type": "change parameter",
-                "animation": this.getAttribute("data-animation"),
-                "parameter": this.getAttribute("data-parameter"),
-                "value": this.value
+                type: "change parameter",
+                animation: this.getAttribute("data-animation"),
+                parameter: this.getAttribute("data-parameter"),
+                value: this.value
             });
         });
     });
@@ -98,11 +98,9 @@ document.addEventListener("DOMContentLoaded", function() {
     var saveConfigurations = document.getElementsByClassName("saveConfigurations");
     forEach.call(saveConfigurations, function(button) {
         button.addEventListener("click", function() {
-            console.log(this.parentElement.id);
-            console.log(this.parentElement.parentElement.id);
             chrome.runtime.sendMessage({
-                "type": "save configuration",
-                "SAVE": this.parentElement.id
+                type: "save configuration",
+                animation: this.getAttribute("data-animation")
             });
         });
     });
@@ -110,17 +108,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // to access variables and functions from the background script
 chrome.runtime.getBackgroundPage(function (backgroundPage) { 
-    // console.log(backgroundPage);
+    chrome.runtime.onMessage.addListener(function(message) {
+        if (message.animation != undefined) {
+            var testCanvas = document.getElementById("myCanvas");
+            var cyx = testCanvas.getContext("2d");
+            cyx.scale(3,3);
+            var wtf = new backgroundPage[message.animation](cyx);
+            wtf.initialize();
+            wtf.animate();
+        }
+    });
     // document.getElementById("glowstick_arcLength").max = backgroundPage.maxWidth;
 });
 
 /* When a jscolor is selected, send a message with its id and the color */
 function getInputColor(inputColor) {
-    console.log("f");
     chrome.runtime.sendMessage({
-        "type": "change parameter",
-        "animation": inputColor.getAttribute("data-animation"),
-        "parameter": inputColor.getAttribute("data-parameter"),
-        "value": inputColor.style.backgroundColor
+        type: "change parameter",
+        animation: inputColor.getAttribute("data-animation"),
+        parameter: inputColor.getAttribute("data-parameter"),
+        value: inputColor.style.backgroundColor
     });
 }

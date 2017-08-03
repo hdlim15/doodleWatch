@@ -6,11 +6,19 @@ function init() {
      * @returns context: The canvas's context
      */
 
+    var canvas = document.createElement("canvas"); // Create the canvas
+    canvas.width = pixels;
+    canvas.height = pixels;
+    var c = canvas.getContext("2d");
+    c.id = "iconContext";
 
     // bingalee.initialize();
     // bingalee.animate();
-    glowstick.animate();
-}
+    // glowstick.animate(c);
+    var huh = new ChangeColors(c, {colors:["red", "blue"]});
+    huh.initialize();
+    huh.animate();
+
 
 chrome.runtime.onMessage.addListener(function (message) {
     if (message == "popup loaded") {
@@ -25,22 +33,38 @@ chrome.runtime.onMessage.addListener(function (message) {
     else if (message.type == "change animation") {
         changeAnimation(message);
     }
-    // else if (messageInfo[0] == "SAVE") {
-
-    // }
     else if (message.type == "change parameter") {
-        cfg = window[message.animation].cfg;
-        cfg[message.parameter] = message.value;
-        console.log(message.value+ 100);
+        changeParameter(message);
+    }
+    else if (message.type == "save configuration") {
+        saveConfiguration(message);
     }
 });
 
 function changeAnimation(message) {
-        // only start animation if it is a different one
-        var newAnimation = message.newAnimation;
         // Stop the previous animation
         window.clearTimeout(timeoutID);
         // Start the next animation
-        window[newAnimation].initialize();
-        window[newAnimation].animate(c);
+        newAnimation = new window[message.newAnimation](c, {colors:["red", "blue"]});
+        newAnimation.initialize();
+        newAnimation.animate();
+}
+
+function changeParameter(message) {
+    cfg = window[message.animation].cfg;
+    cfg[message.parameter] = message.value;
+}
+
+function saveConfiguration(message) {
+    var newFavorite = {
+        animation: message.animation,
+        configuration: window[message.animation].cfg
+    }
+    chrome.storage.sync.set(
+        newFavorite,
+        function() {
+            chrome.runtime.sendMessage(newFavorite);
+        }
+    )
+}
 }

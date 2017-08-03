@@ -1,4 +1,4 @@
-function updateIcon() {
+function updateIcon(c) {
     /**
      * Sets the extension icon to be the canvas.
      * @param c: The 2D context of a canvas.
