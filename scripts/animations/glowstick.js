@@ -1,38 +1,42 @@
 "use strict";
-var glowstick = {
+function glowstick(context, cfg) {
     /**
      * glowstick like animation
      */
-     d_radius: 1,
-     radius: 5,
-     start: 0,
+    this.context = context;
+    this.updateIcon = false;
+    if (typeof cfg == "undefined") {
+        this.cfg = {
+            numArcs: 3,
+            arcLength: PI / 3,
+            arcWidth: 2,
+            speed: 150,
 
-    // Variables that the user can change
-    cfg: {
-        numArcs: 3,
-        arcLength: PI / 3,
-        arcWidth: 2,
-        speed: 150,
+            background: "black",
+            strokeColor: "white"
+        }
+    }
+    else {
+        this.cfg = cfg;
+    }
+    this.d_radius= 1;
+    this.radius= 5;
+    this.start= 0;
 
-        background: "black",
-        strokeColor: "white"
-    },
-
-    updateCanvas: function updateCanvas(c) {
-        setBackground(c, this.cfg.background);
-        c.strokeStyle = this.cfg.strokeColor;
-        console.log(this.cfg.strokeColor);
+    this.updateCanvas = function updateCanvas() {
+        setBackground(this.context, this.cfg.background);
+        this.context.strokeStyle = this.cfg.strokeColor;
 
         // Draw numArcs evenly spaced arcs
         var offset = 2*PI / this.cfg.numArcs;
         for (var i = 0; i < this.cfg.arcWidth; i++) {
             for (var j = 0; j < this.cfg.numArcs; j++) {
-                drawArc(c, 9, 9, this.radius+i, this.start + j*offset, parseFloat(this.cfg.arcLength));
+                drawArc(this.context, 9, 9, this.radius+i, this.start + j*offset, parseFloat(this.cfg.arcLength));
             }
         }
-    },
+    };
 
-    updateVariables: function updateVariables() {
+    this.updateVariables = function updateVariables() {
         // Increase the start radians
         this.start += PI/8;
         this.start %= PI*2;
@@ -42,22 +46,24 @@ var glowstick = {
         if (this.radius >= 8 || this.radius <= 0) {
             this.d_radius = -this.d_radius;
         }
-    },
+    };
 
-    initialize: function initialize(c) {
-        this.updateCanvas(c);
-        updateIcon(c);
-    },
+    this.initialize = function initialize() {
+        this.updateCanvas();
+        if (this.updateIcon) {
+            updateIcon(this.context);
+        }
+    };
 
     // Call animate immediately
-    animate: function animate(c) {
-        var that = this;
+    this.animate = function animate() {
+        this.updateCanvas();
+        if (this.updateIcon) { 
+            updateIcon(this.context);
+        }   
+        this.updateVariables();
 
-        if (!isPaused) {
-            that.updateCanvas(c);
-            updateIcon(c);
-            that.updateVariables();
-        }
-        timeoutID = window.setTimeout(function(){that.animate(c);}, 250-that.cfg.speed);
-    }
+        var that = this;
+        this.timeoutID = window.setTimeout(function(){that.animate();}, 250-that.cfg.speed);
+    };
 }

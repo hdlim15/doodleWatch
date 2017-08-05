@@ -7,6 +7,7 @@
 <html>
   <head>
     <title>popup.html title</title>
+    <script src="scripts/helperFunctions.js"></script>
     <script src="scripts/popup.js"></script>
     <script src="scripts/jscolor.js"></script>
     <link rel="stylesheet" href="styles/popup.css">
@@ -15,20 +16,23 @@
     <div id="startStopDiv">
       <button type="button" id="startStop">STOP</button>
     </div>
-    <div id="favorites">
+    <div id="allAnimations">
 
+      <!-- Bingalee animation -->
       <div class="animation" id="bingalee">
-        <img alt="bingalee">
+        <canvas width="76px" height="76px"></canvas>
         <div class="configurations">
+          <button class="saveConfigurations" data-animation="bingalee">Save</button>
         </div>
       </div>
-
+      <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
       <div class="animation" id="glowstick">
-        <img alt="glowstick">
+        <canvas width="76px" height="76px"></canvas>
         <div class="configurations">
           <table>
             <tr>
               <td>Glowstick Color</td>
+              <!-- <td><input type="color" class="parameter" data-animation="glowstick" data-parameter="strokeColor"></button></td> -->
               <td><button class="jscolor" data-animation="glowstick" data-parameter="strokeColor"></button></td>
             </tr>
             <tr>
@@ -53,55 +57,17 @@
       </div>
 
       <div class="animation" id="ChangeColors">
-        <img alt="changeColors">
+        <canvas width="76px" height="76px"></canvas>
         <div class="configurations">
           <table>
-            <tr>
-              <td>Color 1</td>
-              <td><button class="jscolor" data-animation="ChangeColors" data-parameter="color1"></button></td>
-            </tr>
-            <tr>
-              <td>Color 2</td>
-              <td><button class="jscolor" data-animation="ChangeColors" data-parameter="color2"></button></td>
-            </tr>
           </table>
           <button class="saveConfigurations" data-animation="ChangeColors">Save</button>
         </div>
       </div>
-      <div class="animation">
-        <img >
-        <div class="configurations">
-        </div>
-      </div>
-      <div class="animation">
-        <img >
-        <div class="configurations">
-        </div>
-      </div>
-      <div class="animation">
-        <img >
-        <div class="configurations">
-        </div>
-      </div>
-      <div class="animation">
-        <img >
-        <div class="configurations">
-        </div>
-      </div>
-      <div class="animation">
-        <img >
-        <div class="configurations">
-        </div>
-      </div>
-      <div class="animation">
-        <img >
-        <div class="configurations">
-        </div>
-      </div>
     </div><!-- end of favorites div -->
     
-    <canvas id="myCanvas" width="57px" height="57px" style="border:1px solid black;">
-</canvas>
+    <div id="favorites">
+    </div>
   </body>
 </html>
 

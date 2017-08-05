@@ -9,62 +9,45 @@ function init() {
     var canvas = document.createElement("canvas"); // Create the canvas
     canvas.width = pixels;
     canvas.height = pixels;
-    var c = canvas.getContext("2d");
-    c.id = "iconContext";
+    var context = canvas.getContext("2d");
+        
+    var currentIconAnimation = new bingalee(context);
+    currentIconAnimation.updateIcon = true;
+    currentIconAnimation.initialize();
+    currentIconAnimation.animate();
+    var isPaused = false;
 
-    // bingalee.initialize();
-    // bingalee.animate();
-    // glowstick.animate(c);
-    var huh = new ChangeColors(c, {colors:["red", "blue"]});
-    huh.initialize();
-    huh.animate();
-
-
-chrome.runtime.onMessage.addListener(function (message) {
-    if (message == "popup loaded") {
-        chrome.runtime.sendMessage("isPaused " + isPaused);
-    }
-    else if (message == "stop animation") {
-        isPaused = true;
-    }
-    else if (message == "start animation") {
-        isPaused = false;
-    }
-    else if (message.type == "change animation") {
-        changeAnimation(message);
-    }
-    else if (message.type == "change parameter") {
-        changeParameter(message);
-    }
-    else if (message.type == "save configuration") {
-        saveConfiguration(message);
-    }
-});
-
-function changeAnimation(message) {
-        // Stop the previous animation
-        window.clearTimeout(timeoutID);
-        // Start the next animation
-        newAnimation = new window[message.newAnimation](c, {colors:["red", "blue"]});
-        newAnimation.initialize();
-        newAnimation.animate();
-}
-
-function changeParameter(message) {
-    cfg = window[message.animation].cfg;
-    cfg[message.parameter] = message.value;
-}
-
-function saveConfiguration(message) {
-    var newFavorite = {
-        animation: message.animation,
-        configuration: window[message.animation].cfg
-    }
-    chrome.storage.sync.set(
-        newFavorite,
-        function() {
-            chrome.runtime.sendMessage(newFavorite);
+    chrome.runtime.onMessage.addListener(function (message) {
+        if (message == "popup loaded") {
+            chrome.runtime.sendMessage("isPaused " + isPaused);
         }
-    )
-}
+        else if (message == "stop animation") {
+            isPaused = true;
+            window.clearTimeout(currentIconAnimation.timeoutID);
+        }
+        else if (message == "start animation") {
+            isPaused = false;
+            currentIconAnimation.initialize();
+            currentIconAnimation.animate();
+        }
+        else if (message.type == "update icon") {
+            updateIcon(message);
+        }
+    });
+
+    function updateIcon(message) {
+        if (typeof currentIconAnimation != "undefined") {
+            window.clearTimeout(currentIconAnimation.timeoutID);
+        }
+
+        var iconAnimation = new window[message.animation](context, message.cfg); 
+        iconAnimation.updateIcon = true;
+        iconAnimation.initialize();
+        if (!isPaused) {
+            iconAnimation.animate();
+        }
+
+        currentIconAnimation = iconAnimation;
+    }
+
 }
