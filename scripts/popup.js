@@ -89,27 +89,87 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         /******************** SAVE CONFIGURATION PARAMETERS ********************/
-        function addAnimationToFavorites(animationType, cfgCopy) {
+        function addAnimationToFavorites(animationType, cfg, isNew, storageID) {
             // Create new canvas with scaled context, append to document
             var newCanvas = document.createElement("canvas");
             var context = newCanvas.getContext("2d");
             newCanvas.height = 76;
             newCanvas.width = 76;
+
+            if (isNew) {
+                chrome.storage.sync.get("animationID", function(items) {
+                    var id = items["animationID"];
+                    if (typeof id == "undefined") {
+                        id = 0;
+                    }
+                    newCanvas.id = id;
+                    chrome.storage.sync.set({animationID: id + 1});
+
+                    storeFavorite(animationType, cfg, id);
+                });
+            }
+            else {
+                newCanvas.id = storageID;
+            }
             context.scale(4, 4);
             document.getElementById("favorites").appendChild(newCanvas);
 
             // Create new animation and animate it
-            var newFavoriteAnimation = new backgroundPage[animationType](context, cfgCopy);
+            var newFavoriteAnimation = new backgroundPage[animationType](context, cfg);
             newFavoriteAnimation.initialize();
             newFavoriteAnimation.animate();
             newCanvas.addEventListener("click", function() {
                 chrome.runtime.sendMessage({
                     type: "update icon",
                     animation: animationType,
-                    cfg: cfgCopy
+                    cfg: cfg
                 });
             });
+            newCanvas.addEventListener("contextmenu", function(e) {
+                e.preventDefault();
+                deleteAnimationFromFavorites(this);
+            });
+        } // End of addAnimationToFavorites()
+
+        function deleteAnimationFromFavorites(animation) {
+            chrome.storage.sync.get("allFavorites", function(items) {
+                var favoriteList = items["allFavorites"]
+                for (var i = 0; i < favoriteList.length; i++) {
+                    if (favoriteList[i].ID == animation.id) {
+                        favoriteList.splice(i, 1);
+                        chrome.storage.sync.set({allFavorites: favoriteList});
+                        break;
+                    }
+                }
+            });
+
+            animation.remove();
         }
+
+        function storeFavorite(animationType, cfg, animationID) {
+            var newFavoriteObject = {
+                ID: animationID,
+                animation: animationType,
+                cfg: cfg
+            };
+            chrome.storage.sync.get("allFavorites", function(items) {
+                var favoriteList = items["allFavorites"];
+                if (typeof favoriteList == "undefined") {
+                    favoriteList = [];
+                }
+                favoriteList.push(newFavoriteObject);
+                chrome.storage.sync.set({allFavorites: favoriteList});
+            });
+        } // End of storeFavorite()
+
+
+        (function loadFavorites() {
+            chrome.storage.sync.get("allFavorites", function(items) {
+                forEach.call(items["allFavorites"], function(favorite) {
+                    addAnimationToFavorites(favorite.animation, favorite.cfg, false, favorite.ID);
+                });
+            });
+        })();
 
         // When each save configuration button is clicked...
         var saveConfigurationButtons = document.getElementsByClassName("saveConfigurations");
@@ -119,10 +179,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 var cfgCopy = cloneObject(cfg_dictionary[animationType]);
 
                 // Add the configured animation to the Favorites div
-                addAnimationToFavorites(animationType, cfgCopy);
-
-                // Save configured animation to chrome.storage
-                // chrome.storage.sync.set();
+                addAnimationToFavorites(animationType, cfgCopy, true);
             });
         });
 
@@ -144,3 +201,5 @@ function getInputColor(inputColor) {
     var thisParameter = inputColor.getAttribute("data-parameter");
     cfg_dictionary[thisAnimation][thisParameter] = inputColor.style.backgroundColor;
 }
+
+// chrome.storage.sync.clear();

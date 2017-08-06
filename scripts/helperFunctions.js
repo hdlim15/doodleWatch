@@ -1,3 +1,6 @@
 function cloneObject(oldObject) {
-	return JSON.parse(JSON.stringify(oldObject));
+    /*
+     * Returns a clone of an object
+     */
+    return JSON.parse(JSON.stringify(oldObject));
 }
