@@ -1,5 +1,5 @@
 body {
-    width: 500px;
+    width: 800px;
     height: 485px;
 
     margin: 0;
@@ -31,6 +31,8 @@ body {
 }
 
 #favorites {
+    border-top: 3px solid black;
+    padding-top: 15px;
     text-align: center;
 }
 

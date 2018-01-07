@@ -17,15 +17,31 @@
       <button type="button" id="startStop">STOP</button>
     </div>
     <div id="allAnimations">
-
+      <span><p>Customizable Animations</p></span>
       <!-- Bingalee animation -->
       <div class="animation" data-animation="bingalee">
         <canvas width="76px" height="76px"></canvas>
         <div class="configurations">
+          <table>
+            <tr>
+              <td>Text</td>
+              <td><input type="text" class="parameter" data-animation="bingalee" data-parameter="text"></button></td>
+            </tr>
+            <tr>
+              <td>Text Color</td>
+              <td><button class="jscolor" data-animation="bingalee" data-parameter="textColor"></button></td>
+            </tr>
+            <tr>
+              <td>Background Color</td>
+              <td><button class="jscolor" data-animation="bingalee" data-parameter="backgroundColor"></button></td>
+            </tr>
+          </table>
           <button class="saveCfg" data-animation="bingalee">Save</button>
         </div>
       </div>
-      <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+      <!-- End bingalee animation -->
+
+      <!-- Glowstick animation -->
       <div class="animation" data-animation="glowstick">
         <canvas width="76px" height="76px"></canvas>
         <div class="configurations">
@@ -55,17 +71,40 @@
           <button class="saveCfg" data-animation="glowstick">Save</button>
         </div>
       </div>
+      <!-- End glowstick animation -->
 
+      <!-- ChangeColors animation -->
       <div class="animation" data-animation="ChangeColors">
         <canvas width="76px" height="76px"></canvas>
         <div class="configurations">
           <table>
+            <tr>
+              <td>Number of Colors</td>
+              <td><input class="parameter" data-animation="ChangeColors" data-parameter="numColors" type="range" min=1 max=4 step=1></td>
+            </tr>
+            <tr>
+              <td>Color 1</td>
+              <td><button class="jscolor" data-animation="ChangeColors" data-parameter="c1"></button></td>
+            </tr>
+            <tr>
+              <td>Color 2</td>
+              <td><button class="jscolor" data-animation="ChangeColors" data-parameter="c2"></button></td>
+            </tr>
+            <tr>
+              <td>Color 3</td>
+              <td><button class="jscolor" data-animation="ChangeColors" data-parameter="c3"></button></td>
+            </tr>
+            <tr>
+              <td>Color 4</td>
+              <td><button class="jscolor" data-animation="ChangeColors" data-parameter="c4"></button></td>
+            </tr>
           </table>
           <button class="saveCfg" data-animation="ChangeColors">Save</button>
         </div>
       </div>
-    </div><!-- end of favorites div -->
-    
+    </div>
+    <!-- End ChangeColors animation -->
+
     <div id="favorites">
     </div>
   </body>

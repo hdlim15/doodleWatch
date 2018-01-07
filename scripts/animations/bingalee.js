@@ -6,7 +6,7 @@ function bingalee(context, cfg) {
     this.updateIcon = false;
     if (typeof cfg == "undefined") {
             this.cfg = {
-            text: "B I N G A L E E       D I N G A L E E",
+            text: "BINGALEE DINGALEE",
             textColor: "red",
             backgroundColor: "#FFF8DC"
         }
@@ -14,8 +14,8 @@ function bingalee(context, cfg) {
     else {
         this.cfg = cfg;
     }
-    this.steps = 180;
-    this.step = 180;
+    this.steps = 9 * this.cfg.text.length + 9;
+    this.step = this.steps;
 
     this.updateCanvas = function updateCanvas() {
         setBackground(this.context, this.cfg.backgroundColor);

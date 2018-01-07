@@ -1,7 +1,9 @@
-//debugging purposes
-console = chrome.extension.getBackgroundPage().console;
 // configuration dictionary that stores cfg of each animation
 var cfg_dictionary = {};
+
+(function () {
+//debugging purposes
+console = chrome.extension.getBackgroundPage().console;
 
 // When the DOM is loaded
 document.addEventListener("DOMContentLoaded", function() {
@@ -25,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     })();
 
-    // Start and stop the animation when the button is pressed
+    // Start/stop the animation when the start/stop button is pressed
     startStop.addEventListener("click", function() {
         if (startStop.innerHTML == "STOP") {
             startStop.style.backgroundColor = "green";
@@ -41,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
     //^^^^^^^^^^^^^^^^^ End of code for the Start/Stop button ^^^^^^^^^^^^^^^^^^
 
 
-    // Open and close the configurations window 
+    // Open and close the configurations window
     var animations = document.getElementsByClassName("animation");
     window.addEventListener("click", function(e) {
         forEach.call(animations, function(animation) {
@@ -113,11 +115,14 @@ document.addEventListener("DOMContentLoaded", function() {
     //^^^^^^^^^^^^^^^^^^^^^^^ END OF GET BACKGROUND PAGE ^^^^^^^^^^^^^^^^^^^^^^^
 });
 
+// chrome.storage.sync.clear();
+
+
+})();
+
 /* When a jscolor is selected, send a message with its id and the color */
 function getInputColor(inputColor) {
     var thisAnimation = inputColor.getAttribute("data-animation");
     var thisParameter = inputColor.getAttribute("data-parameter");
     cfg_dictionary[thisAnimation][thisParameter] = inputColor.style.backgroundColor;
 }
-
-// chrome.storage.sync.clear();
